@@ -1,0 +1,153 @@
+---
+title: "Hermun Verkefni 1"
+author: "Jóhanna, Ólöf og Unnar"
+date: "1/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+Glæra 6
+```{r}
+rnorm(100,0,1)
+rnorm(50,10,5)
+runif(30,0,10)
+```
+
+```{r}
+hist<- (replicate(100, mean(rnorm (10))))
+
+```
+
+
+```{r}
+dreifing <- (replicate(1000, mean(runif (10,0,10))))
+dreifing <- as.data.frame(dreifing)
+ggplot(dreifing, aes(dreifing))+geom_histogram()
+```
+
+
+```{r}
+dreifing2 <- (replicate(1000, mean(runif (100,0,10))))
+dreifing2 <- as.data.frame(dreifing2)
+ggplot(dreifing2, aes(dreifing2))+geom_histogram()
+```
+
+
+```{r}
+dreifing3 <- (replicate(100, mean(runif (1000,0,10))))
+dreifing3 <- as.data.frame(dreifing3)
+ggplot(dreifing3, aes(dreifing3))+geom_histogram()
+```
+
+Fyrstu tvö úrtökin eru normaldreifð, þriðja dreifingin er svokölluð Poisson dreifing. Poisson dreifing er nefnd eftir franska stærðfræðingnum Siméon Denis Poisson. Dreifingin er gerð af strjálli dreifingu sem notuð meðal annars til þess að finna tiltekinn fjölda eininga á ákveðnu bili í tíma eða rúmi (orðabok.is) 
+
+Meðaltal og staðalfrávik fyrsta normaldreifða 100 staka úrtaksins er 0 með staðalfrávikið 1. 
+Seinna normaldreifða 50 staka úrtakið er með meðaltalið 10 og staðalfrávik 5. 
+Poisson dreifingin hefur meðaltalið .......
+ 
+```{r}
+stadtolur1 <- rnorm(100,0,1)
+stadtolur2 <- rnorm(50,10,5)
+stadtolur3 <- runif(30,0,10)
+```
+
+Leggja mat á það hversu sannfærandi staðtölurnar eru: Hvert ætti meðaltalið og staðalfrávikið að vera?
+Ef staðtölurnar stemma ekki þá gæti (a) hermunin verið röng eða (b) fjöldi úrtaka (endurtekninga) verið of lítil. Reyndu að meta þetta og bættu úr ef þú nærð að greina vandamálið
+```{r}
+
+```
+
+Hvernig breytist tíminn með breyttum fjölda endurtekninga? eykst tímalengdin línulega... þarf að svara þessu, ég átta mig ekki á þessu :) 
+```{r}
+system.time(print(mean(1:10^8)))
+system.time(mean(1:10^8))
+
+
+```
+
+
+Tíminn lengist um 20 sekúndur ef 8 er breytt í 8.1
+
+```{r}
+system.time(print(mean(1:10^8.1)))
+system.time(mean(1:10^8.1))
+```
+
+
+Ef 8 er breytt í 9 þá lengist tíminn um sirka 6 sekúndur. 
+
+```{r}
+system.time(print(mean(1:10^9)))
+system.time(mean(1:10^9))
+```
+
+
+Reyndu að búa til einfalt R fall sem teiknar stöplarit af meðaltali 100 normaltalna, sjá glæru 15..... er þetta correctomundo? 
+
+það þarf líka að klára þessi :) 
+
+Modify your function to draw a histogram of
+n draws of mean(rnorm(m))
+
+Modify your function to allow the user to
+choose which distribution function, d, to use
+
+```{r}
+glaera15 <- mean(rnorm(100,0,1))
+
+hist(glaera15)
+
+```
+
+T próf fyrir dreifingarnar af glæru 6. Tvær þeirra eru normaldreifðar og ein er Poisson dreifing. 
+
+Á eftir að túlka. 
+
+Niðurstöður t-prófs (t = 0.25682, df = 99, p-value = 0.7978)
+
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ -0.1524685  0.1978054
+sample estimates:
+ mean of x 
+0.02266845
+
+```{r}
+tprof1 <- set.seed(0)
+treeVolume <- c(rnorm(100, mean = 0, sd = 1))
+t.test(treeVolume, mu = 0)
+```
+
+Niðurstöður t-prófs (t = 0.18468, df = 49, p-value = 0.8542)
+
+alternative hypothesis: true mean is not equal to 10
+95 percent confidence interval:
+  8.817614 11.421695
+sample estimates:
+mean of x 
+ 10.11965
+```{r}
+tprof2 <- set.seed(0)
+treeVolume <- c(rnorm(50, mean = 10, sd = 5))
+t.test(treeVolume, mu = 10)
+```
+
+
+Niðurstöður t-prófs   (t = 15.619, df = 49, p-value < 2.2e-16)
+
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+  8.817614 11.421695
+sample estimates:
+mean of x 
+ 10.11965 
+```{r}
+tprof3 <- set.seed(0)
+treeVolume <- c(runif(30, mean = 0, sd = 10))
+t.test(treeVolume, mu = 0)
+
+```
+
