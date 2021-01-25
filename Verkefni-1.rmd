@@ -1,0 +1,210 @@
+---
+title: "Verkefni 1 - Málstofa"
+author: "Bára Elísabet Dagsdóttir"
+date: "1/24/2021"
+output: pdf_document
+---
+
+```{r}
+library(ggplot2)
+```
+
+Fara yfir fyrstu níu glærurnar í Hadley Wickham: Simulation
+
+### 1. Æfa sig á rnorm , og runif á glæru 6
+
+100 tölur normal
+```{r}
+rnorm(100, mean=0, sd=1)
+```
+50 tölur normal
+```{r}
+rnorm(50, mean=10, sd=5)
+```
+
+30 tölur uniform
+```{r}
+runif(30, min=0, max=10)
+```
+
+
+### Æfa replicate á glæru 7, nota ggplot í stað qplot eða nota base graphics.
+```{r}
+replicate(10, mean(rnorm(100)))
+```
+
+
+```{r}
+x <- replicate(100, mean(rnorm(10)))
+xdata <- as.data.frame(x)
+
+ggplot(xdata, aes(x=x)) + geom_histogram() + theme_classic()
+```
+
+### Framkvæma það sem er á glæru 8, lausnir eru á næstu glæru en reyna að nota ekki qplot eins og þar.
+
+Fyrsta dæmið er sama og er hér f. ofan
+```{r}
+a <- replicate(1000, mean(runif(10)))
+adata <- as.data.frame(a)
+
+ggplot(adata, aes(x=a)) + geom_histogram(colour="black") + theme_classic()
+```
+
+```{r}
+b <- replicate(1000, mean(runif(100)))
+bdata <- as.data.frame(b)
+
+ggplot(bdata, aes(x=b)) + geom_histogram(colour="black") + theme_classic()
+```
+
+```{r}
+c <- replicate(100, mean(runif(1000)))
+cdata <- as.data.frame(c)
+
+ggplot(cdata, aes(x=c)) + geom_histogram(colour="black") + theme_classic()
+```
+
+
+* Pælingar, er til einhver betri leið en að búa alltaf til dataframe fyrir gögnin?
+* Hvers vegna segir maður ekki hvað meðaltalið og sd er í þessu?
+
+### Endurtaka næsta lið á undan en reyna að leggja mat á það hversu vel hefur til tekist
+
+Skil ekki alveg?
+
+### Reikna staðtölur eins og meðaltal og staðalfrávik. T.d. í fyrsta dæminu á gærlu 8 er meðaltal reiknað fyrir 10 manna úrtök og dregin 100 úrtök. Hvert er meðaltalið og staðalfrávikið?
+
+```{r}
+mean(xdata$x)
+sd(xdata$x)
+```
+
+### Leggja mat á það hversu sannfærandi staðtölurnar eru: Hvert ætti meðaltalið og staðalfrávikið að vera?
+
+Ætti meðaltalið ekki að vera 0 og staðalfrávikið 1, þannig meðaltalið er nálægt því sem það ætti að vera en staðalfrávikið er frekar lágt (um 0,3 í staðinn fyrir 1)??
+
+Ef staðtölurnar stemma ekki þá gæti 
+(a) hermunin verið röng eða 
+(b) fjöldi úrtaka (endurtekninga) verið of lítil. 
+Reyndu að meta þetta og bættu úr ef þú nærð að greina vandamálið.
+
+Ég er ekki viss af hverju þetta er svona, ég prófa að fjölga endurtekningum úr 100 í 1000:
+
+```{r}
+x2 <- replicate(1000000, mean(rnorm(10)))
+xdata2 <- as.data.frame(x2)
+```
+
+```{r}
+mean(xdata2$x2)
+sd(xdata2$x2)
+```
+
+Staðalfrávikið er bara svipað... lækkar m.a.s. smá. Og lækkar líka ef ég stækka úrtakstærðina... og það lagast ekki heldur þó ég bæti við skilgreiningu á sd...
+
+*** finna eitthvað út úr þessu
+
+### Prófaðu að nota system.time() til að sjá hve langan tíma hermunin tekur.
+
+Skoða fyrir mismunandi fjölda endurtekninga:
+
+```{r}
+system.time(replicate(100, mean(rnorm(10))))
+```
+
+100 endurtekningar tekur enga stund
+
+```{r}
+system.time(replicate(1000, mean(rnorm(10))))
+```
+
+1000 endurtekningar mjög fljótt
+
+```{r}
+system.time(replicate(10000, mean(rnorm(10))))
+```
+
+10.000 endurtekningar aðeins hægara.. veit ekki muninn á user og system.
+
+```{r}
+system.time(replicate(100000, mean(rnorm(10))))
+```
+
+Enn hægara hér
+
+```{r}
+system.time(replicate(1000000, mean(rnorm(10))))
+```
+
+Milljón endurtekningar, farið að hægja nokkuð mikið á.. í kringum 11 sek
+
+```{r}
+system.time(replicate(2000000, mean(rnorm(10))))
+```
+
+Tvær milljónir endurtekninga taka sirka tvöfalt meiri tíma en milljón.
+
+### Mundu að ef þú vilt birta mynd eða niðurstöður þarf að vera með print eða plot skipun í fallinu, system.time() hvorki prentar né teiknar sjálfkrafa eins og gerist á skipanalínunni. Berðu saman eftirfarandi tvær útgáfur í kóðabrotinu hér fyrir neðan:
+
+```{r}
+system.time(mean(1:10^8))
+```
+
+```{r}
+system.time(print(mean(1:10^8)))
+```
+
+
+### Hvernig breytist tíminn með breyttum fjölda endurtekninga, eykst tímalengdin línulega?
+
+Prófaði mismunandi fjölda endurtekninga og skrifaði niður tímann og fjöldann, virðist ekki vera mikill munur á tímanum þegar endurtekningar eru fáar, upp að ca 1000, þá fer tíminn að aukast nokkurn veginn línulega.
+
+```{r}
+x = c(10, 50, 100, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000)
+y = c(0.005, 0.001, 0.001, 0.004, 0.009, 0.016, 0.024, 0.038, 0.047, 0.054, 0.062, 0.072, 0.077, 0.084)
+
+timi.data <- data.frame(x, y)
+```
+
+```{r}
+ggplot(timi.data, aes(x=x, y=y)) + geom_point() + 
+  xlab("Fjöldi endurtekninga") + ylab("Tími") + theme_classic()
+```
+
+
+### Prófaðu að stækka úrtökin án þess að fjölga þeim, hvaða áhrif hefur það á tímalengdina?
+
+Prófum 100 endurtekningar og mismunandi úrtaksstærðir:
+
+```{r}
+system.time(replicate(100, mean(rnorm(10))))
+```
+
+```{r}
+system.time(replicate(100, mean(rnorm(100))))
+```
+
+```{r}
+system.time(replicate(100, mean(rnorm(1000))))
+```
+
+```{r}
+system.time(replicate(100, mean(rnorm(10000))))
+```
+
+```{r}
+system.time(replicate(100, mean(rnorm(1000000))))
+```
+
+Hægir á tímanum... prófaði líka með 1000 endurtekningum - ef úrtaksstærðin var 1000.000 þá tók hermunin rúmlega mínútu.
+
+### Sérðu einhverjar aðrar leiðir til að fá sömu niðurstöður, t.d. nota for, lapply eða sapply í stað replicate? Hvaða áhrif hefur það á skilvirkni úrvinnslunnar, þ.e. tímann sem hermunin tekur?
+
+*** Sömu niðurstöður og hvað?
+
+### Reyndu að búa til einfalt R fall sem teiknar stöplarit af meðaltali 100 normaltalna, sjá glæru 15. Fallið gæti t.d. haft eftirfarandi skilgreiningu: teikna.meðaltöl(n= 100)
+
+
+
+
