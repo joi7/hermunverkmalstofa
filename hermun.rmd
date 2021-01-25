@@ -1,0 +1,85 @@
+---
+title: "Hermun Verkefni"
+author: "Jóhanna, Ólöf, Unnar"
+date: "1/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+options(scipen = TRUE)
+library(knitr)
+library(tidyverse)
+```
+
+```{r normal dreifinga function}
+normalDreifingar <- function(upphafsFjoldi, endaFjoldi, M, SD, mynd = FALSE){
+df <- NULL
+
+
+for(i in upphafsFjoldi:endaFjoldi){
+  data <- enframe(rnorm(upphafsFjoldi, M, SD))
+  medaltal <- mean(data$value)
+  stadalfravik <- sd(data$value)
+  midgildi <- median(data$value)
+  df <- as.data.frame(rbind(df, data.frame(medaltal, stadalfravik, midgildi, fjoldi = upphafsFjoldi)))
+  upphafsFjoldi <- upphafsFjoldi + 1
+}
+
+plot <- df %>% 
+  ggplot(aes(medaltal, upphafsFjoldi)) + geom_dotplot() + theme_minimal() + labs(x = "Meðaltal", y = "Fjöldi")
+
+plot <- df %>%
+  ggplot(aes(x=medaltal, y = fjoldi))+geom_point()+ylab("Fjöldi")+xlab("Meðaltal")
+
+if (mynd == FALSE) {
+return(df)
+} else {
+return(plot)
+}
+
+
+}
+
+normalDreifingar(10, 150,2, 0.5, mynd = TRUE)
+
+
+
+
+```
+
+```{r þýði}
+data <- enframe(rnorm(10000, 456, 24))
+
+data %>% 
+  summarise(meðaltal = mean(value), staðalfravik = sd(value))
+```
+
+```{r úrtaksmeðaltöl}
+staerd1 <- replicate(10000, mean(sample(data$value,10)))
+staerd2 <- replicate(10000, mean(sample(data$value,30)))
+staerd3 <- replicate(10000, mean(sample(data$value,100)))
+staerd4 <- replicate(10000, mean(sample(data$value,200)))
+
+staerd.df <- data.frame(staerd1, staerd2, staerd3, staerd4)
+staerd.df <-gather(staerd.df, staerd, medaltal)
+staerd.df %>%
+  ggplot(aes(medaltal)) + geom_histogram(binwidth = 0.1) + facet_wrap(~ staerd) + theme_minimal() + labs(title = "Úrtaksmeðaltöl", x = "Meðaltal", y = "Fjöldi" )
+```
+
+```{r virkar T próf?}
+
+virkarTprof <- function(thydiA, thydiB, Ma, Sa, Mb, Sb, urtakA, urtakB){
+
+dreifingA <- rnorm(thydiA, Ma,Sa)
+dreifingB <- rnorm(thydiB, Mb, Sb)
+urtakA <- sample(dreifingA, urtakA)
+urtakB <- sample(dreifingB, urtakB)
+t.test(urtakB, urtakA)
+
+}
+
+virkarTprof()
+```
+
+
+
