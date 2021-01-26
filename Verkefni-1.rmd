@@ -68,7 +68,7 @@ ggplot(cdata, aes(x=c)) + geom_histogram(colour="black") + theme_classic()
 
 ### Endurtaka næsta lið á undan en reyna að leggja mat á það hversu vel hefur til tekist
 
-Skil ekki alveg?
+
 
 ### Reikna staðtölur eins og meðaltal og staðalfrávik. T.d. í fyrsta dæminu á gærlu 8 er meðaltal reiknað fyrir 10 manna úrtök og dregin 100 úrtök. Hvert er meðaltalið og staðalfrávikið?
 
@@ -196,27 +196,12 @@ Hægir á tímanum... prófaði líka með 1000 endurtekningum - ef úrtaksstær
 
 ### Sérðu einhverjar aðrar leiðir til að fá sömu niðurstöður, t.d. nota for, lapply eða sapply í stað replicate? Hvaða áhrif hefur það á skilvirkni úrvinnslunnar, þ.e. tímann sem hermunin tekur?
 
-```{r}
-sapply(1:reps, function(i){sum(rexp(n=nexps, rate=rate))})
-```
 
-reps= hversu margar endurtekningar
 
 
 ### Reyndu að búa til einfalt R fall sem teiknar stöplarit af meðaltali 100 normaltalna, sjá glæru 15. Fallið gæti t.d. haft eftirfarandi skilgreiningu: teikna.meðaltöl(n= 100)
 
-```{r}
-teikna_medaltol <- function (x) 
-  {
-  x <- mean(rnorm(100))
-  xdata <- as.data.frame(x)
-  plot <- ggplot(xdata, aes(x=x)) + geom_histogram() + theme_classic()
-  return(plot)
-  }
 
-```
-
-ég hef ekki hugmynd hvað ég er að gera...
 
 
 
